@@ -4,28 +4,8 @@ import 'package:test/test.dart';
 
 import 'package:flutter_clean_architecture/domain/use_cases/use_cases.dart';
 
-class RemoteAuthentication {
-  final HttpClient httpClient;
-  final String url;
-
-  RemoteAuthentication({
-    required this.httpClient,
-    required this.url,
-  });
-
-  Future<void> auth(AuthenticationParams params) async {
-    final body = {'email': params.email, 'password': params.password};
-    await httpClient.request(url: url, method: 'post', body: body);
-  }
-}
-
-abstract class HttpClient {
-  Future<void>? request({
-    required String url,
-    required String method,
-    Map<String, dynamic> body,
-  });
-}
+import 'package:flutter_clean_architecture/data/http/http.dart';
+import 'package:flutter_clean_architecture/data/use_cases/use_cases.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
