@@ -74,4 +74,19 @@ void main() {
     // Assert
     expect(future, throwsA(DomainError.unexpected));
   });
+
+  test('should throw UnexpectedError if HttpClient return 500', () async {
+    // Arrange
+    when(httpClient.request(
+      url: anyNamed('url'),
+      method: anyNamed('method'),
+      body: anyNamed('body'),
+    )).thenThrow(HttpError.serverError);
+
+    // Act
+    final future = sut.auth(params);
+
+    // Assert
+    expect(future, throwsA(DomainError.unexpected));
+  });
 }
