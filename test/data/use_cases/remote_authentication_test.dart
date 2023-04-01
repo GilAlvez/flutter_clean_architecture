@@ -3,6 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:flutter_clean_architecture/domain/use_cases/use_cases.dart';
+import 'package:flutter_clean_architecture/domain/exceptions/exceptions.dart';
 
 import 'package:flutter_clean_architecture/data/http/http.dart';
 import 'package:flutter_clean_architecture/data/use_cases/use_cases.dart';
@@ -39,5 +40,25 @@ void main() {
         'password': params.password,
       },
     ));
+  });
+
+  test('should throw UnexpectedError if HttpClient return 400', () async {
+    // Arrange
+    when(httpClient.request(
+      url: anyNamed('url'),
+      method: anyNamed('method'),
+      body: anyNamed('body'),
+    )).thenThrow(HttpError.badRequest);
+
+    final params = AuthenticationParams(
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    );
+
+    // Act
+    final future = sut.auth(params);
+
+    // Assert
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
