@@ -14,19 +14,20 @@ void main() {
   late RemoteAuthentication sut;
   late HttpClientSpy httpClient;
   late String url;
+  late AuthenticationParams params;
 
   setUp(() {
     httpClient = HttpClientSpy();
     url = faker.internet.httpUrl();
     sut = RemoteAuthentication(httpClient: httpClient, url: url);
+    params = AuthenticationParams(
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    );
   });
 
   test('should call HttpClient with correct values', () async {
     // Arrange
-    final params = AuthenticationParams(
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    );
 
     // Act
     await sut.auth(params);
@@ -49,11 +50,6 @@ void main() {
       method: anyNamed('method'),
       body: anyNamed('body'),
     )).thenThrow(HttpError.badRequest);
-
-    final params = AuthenticationParams(
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    );
 
     // Act
     final future = sut.auth(params);
