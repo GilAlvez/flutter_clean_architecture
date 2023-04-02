@@ -1,7 +1,7 @@
 import '../entities/entities.dart';
 
 abstract class AuthenticationUseCase {
-  Future<AccountEntity> execute(AuthenticationParams params);
+  Future<AccountEntity> auth(AuthenticationParams params);
 }
 
 class AuthenticationParams {
