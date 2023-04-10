@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:faker/faker.dart';
 import 'package:http/http.dart';
 import 'package:test/test.dart';
@@ -14,6 +16,7 @@ class HttpAdapter {
   Future<void> request({
     required String url,
     required String method,
+    Map<String, dynamic>? body,
   }) async {
     final headers = {
       'content-type': 'application/json',
@@ -22,6 +25,7 @@ class HttpAdapter {
     await client.post(
       Uri.parse(url),
       headers: headers,
+      body: jsonEncode(body),
     );
   }
 }
@@ -40,8 +44,11 @@ void main() {
 
   group(HttpAdapter, () {
     test('should call post with corret values', () async {
+      // Arrange
+      final bodyMock = {'anyKey': 'anyValue'};
+
       // Act
-      await sut.request(url: url, method: 'post');
+      await sut.request(url: url, method: 'post', body: bodyMock);
 
       // Expect
       verify(client.post(
@@ -50,6 +57,7 @@ void main() {
           'content-type': 'application/json',
           'accept': 'application/json',
         },
+        body: jsonEncode(bodyMock),
       ));
     });
   });
