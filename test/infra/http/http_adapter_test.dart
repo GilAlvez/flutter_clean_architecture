@@ -15,13 +15,20 @@ class HttpAdapter {
     required String url,
     required String method,
   }) async {
-    await client.post(Uri.parse(url));
+    final headers = {
+      'content-type': 'application/json',
+      'accept': 'application/json',
+    };
+    await client.post(
+      Uri.parse(url),
+      headers: headers,
+    );
   }
 }
 
 @GenerateNiceMocks([MockSpec<Client>()])
 void main() {
-  group('post', () {
+  group(HttpAdapter, () {
     test('should call post with corret values', () async {
       // Arrange
       final client = MockClient();
@@ -32,7 +39,13 @@ void main() {
       await sut.request(url: url, method: 'post');
 
       // Expect
-      verify(client.post(Uri.parse(url)));
+      verify(client.post(
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json',
+        },
+      ));
     });
   });
 }
