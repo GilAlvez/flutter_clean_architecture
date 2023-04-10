@@ -28,13 +28,18 @@ class HttpAdapter {
 
 @GenerateNiceMocks([MockSpec<Client>()])
 void main() {
+  late MockClient client;
+  late String url;
+  late HttpAdapter sut;
+
+  setUp(() {
+    client = MockClient();
+    sut = HttpAdapter(client);
+    url = faker.internet.httpUrl();
+  });
+
   group(HttpAdapter, () {
     test('should call post with corret values', () async {
-      // Arrange
-      final client = MockClient();
-      final sut = HttpAdapter(client);
-      final url = faker.internet.httpUrl();
-
       // Act
       await sut.request(url: url, method: 'post');
 
