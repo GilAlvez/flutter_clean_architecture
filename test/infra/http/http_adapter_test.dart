@@ -18,14 +18,13 @@ class HttpAdapter {
     required String method,
     Map<String, dynamic>? body,
   }) async {
-    final headers = {
-      'content-type': 'application/json',
-      'accept': 'application/json',
-    };
+    final jsonHeaders = {'content-type': 'application/json', 'accept': 'application/json'};
+    final jsonBody = body != null ? jsonEncode(body) : null;
+
     await client.post(
       Uri.parse(url),
-      headers: headers,
-      body: jsonEncode(body),
+      headers: jsonHeaders,
+      body: jsonBody,
     );
   }
 }
@@ -58,6 +57,18 @@ void main() {
           'accept': 'application/json',
         },
         body: jsonEncode(bodyMock),
+      ));
+    });
+
+    test('should call post without body', () async {
+      // Arrange
+      // Act
+      await sut.request(url: url, method: 'post');
+
+      // Expect
+      verify(client.post(
+        any,
+        headers: anyNamed('headers'),
       ));
     });
   });
