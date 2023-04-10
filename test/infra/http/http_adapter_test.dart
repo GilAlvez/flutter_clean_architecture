@@ -117,5 +117,19 @@ void main() {
       // Expect
       expect(response, null);
     });
+
+    test('should return null when status code 204', () async {
+      // Arrange
+      mockResponse(
+        body: '',
+        statusCode: 204,
+      );
+
+      // Act
+      final response = await sut.request(url: url, method: 'post');
+
+      // Expect
+      expect(response, null);
+    });
   });
 }
