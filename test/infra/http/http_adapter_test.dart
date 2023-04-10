@@ -46,15 +46,26 @@ void main() {
   });
 
   group(HttpAdapter, () {
+    final bodyMock = {'anyKey': 'anyValue'};
+
+    PostExpectation mockRequest() {
+      return when(
+        client.post(any, headers: anyNamed('headers'), body: anyNamed('body')),
+      );
+    }
+
+    void mockResponse({required int statusCode, required String body}) {
+      mockRequest().thenAnswer(
+        (_) async => Response(body, statusCode),
+      );
+    }
+
+    setUp(() {
+      mockResponse(body: jsonEncode(bodyMock), statusCode: 200);
+    });
+
     test('should call post with corret values', () async {
       // Arrange
-      final bodyMock = {'anyKey': 'anyValue'};
-
-      when(
-        client.post(any, headers: anyNamed('headers'), body: anyNamed('body')),
-      ).thenAnswer(
-        (_) async => Response(jsonEncode(bodyMock), 200),
-      );
 
       // Act
       await sut.request(url: url, method: 'post', body: bodyMock);
@@ -72,13 +83,6 @@ void main() {
 
     test('should call post without body', () async {
       // Arrange
-      final bodyMock = {'anyKey': 'anyValue'};
-
-      when(
-        client.post(any, headers: anyNamed('headers'), body: anyNamed('body')),
-      ).thenAnswer(
-        (_) async => Response(jsonEncode(bodyMock), 200),
-      );
 
       // Act
       await sut.request(url: url, method: 'post');
@@ -92,13 +96,6 @@ void main() {
 
     test('should return data when status code 200', () async {
       // Arrange
-      final bodyMock = {'anyKey': 'anyValue'};
-
-      when(
-        client.post(any, headers: anyNamed('headers')),
-      ).thenAnswer(
-        (_) async => Response(jsonEncode(bodyMock), 200),
-      );
 
       // Act
       final response = await sut.request(url: url, method: 'post');
@@ -109,10 +106,9 @@ void main() {
 
     test('should return null when status code 200 with no data', () async {
       // Arrange
-      when(
-        client.post(any, headers: anyNamed('headers')),
-      ).thenAnswer(
-        (_) async => Response('', 200),
+      mockResponse(
+        body: '',
+        statusCode: 200,
       );
 
       // Act
